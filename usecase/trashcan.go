@@ -5,12 +5,11 @@ import (
 	"gomibakokun_backend/domain"
 	"gomibakokun_backend/domain/repository"
 
-	"cloud.google.com/go/firestore"
 	"github.com/google/uuid"
 )
 
 type TrashcanUseCase interface {
-	CreateTrashcan(ctx context.Context, client *firestore.Client, latitude float64, longitude float64, nearestBuilding string, trashType []string) error
+	CreateTrashcan(ctx context.Context, latitude float64, longitude float64, image string, trashType []string) error
 }
 
 type trashcanUseCase struct {
@@ -23,21 +22,21 @@ func NewTrashcanUseCase(tr repository.TrashcanRepository) TrashcanUseCase {
 	}
 }
 
-func (tu *trashcanUseCase) CreateTrashcan(ctx context.Context, client *firestore.Client, latitude float64, longitude float64, nearestBuilding string, trashType []string) error {
+func (tu *trashcanUseCase) CreateTrashcan(ctx context.Context, latitude float64, longitude float64, image string, trashType []string) error {
 	ID, err := uuid.NewRandom()
 	if err != nil {
 		return err
 	}
 
 	trashcan := domain.Trashcan{
-		ID:              ID.String(),
-		Latitude:        latitude,
-		Longitude:       longitude,
-		NearestBuilding: nearestBuilding,
-		TrashType:       trashType,
+		ID:        ID.String(),
+		Latitude:  latitude,
+		Longitude: longitude,
+		Image:     image,
+		TrashType: trashType,
 	}
 
-	err = tu.trashcanRepository.CreateTrashcan(ctx, client, &trashcan)
+	err = tu.trashcanRepository.CreateTrashcan(ctx, &trashcan)
 
 	return err
 }

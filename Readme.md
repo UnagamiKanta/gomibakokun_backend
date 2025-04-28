@@ -42,7 +42,7 @@ rootdir
   - ID(string)
   - Lattitude(Float64)精度はこのくらいで大丈夫か？実験する
   - Longtitude(Float64)
-  - NearestBuilding(string)変わる可能性あり
+  - Image(string)変わる可能性あり
   - ImageUrl(string)
   - TrashType([]string)
     - burnable
