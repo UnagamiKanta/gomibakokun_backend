@@ -10,9 +10,9 @@ import (
 )
 
 func InitFirestoreClient(ctx context.Context, projectID string) (*firestore.Client, error) {
-	credJson := []byte(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+	credJson := []byte(os.Getenv("GOOGLE_CREDENTIALS_JSON"))
 	if len(credJson) == 0 {
-		log.Println("GOOGLE_APPLICATION_CREDENTIALS is not set")
+		log.Println("GOOGLE_CREDENTIALS_JSON is not set")
 	}
 
 	client, err := firestore.NewClient(ctx, projectID, option.WithCredentialsJSON(credJson))
