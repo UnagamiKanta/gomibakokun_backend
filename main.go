@@ -17,7 +17,7 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "5000"
+		port = "8080"
 	}
 
 	ctx := context.Background()
@@ -32,5 +32,6 @@ func main() {
 
 	e := echo.New()
 	e.POST("/trashcan", trashcanHandler.HandleTrashcanCreate)
-	e.Start(":" + port)
+
+	e.Logger.Fatal(e.Start(":" + port))
 }

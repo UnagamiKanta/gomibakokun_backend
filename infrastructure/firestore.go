@@ -2,6 +2,7 @@ package firestore
 
 import (
 	"context"
+	"encoding/base64"
 	"log"
 	"os"
 
@@ -10,15 +11,20 @@ import (
 )
 
 func InitFirestoreClient(ctx context.Context, projectID string) (*firestore.Client, error) {
-	credJson := []byte(os.Getenv("GOOGLE_CREDENTIALS_JSON"))
-	if len(credJson) == 0 {
-		log.Println("GOOGLE_CREDENTIALS_JSON is not set")
+	b64 := os.Getenv("GOOGLE_CREDENTIALS_JSON_BASE64")
+	if b64 == "" {
+		log.Fatal("GOOGLE_CREDENTIALS_JSON_BASE64 is not set")
 	}
 
-	client, err := firestore.NewClient(ctx, projectID, option.WithCredentialsJSON(credJson))
+	dec, err := base64.StdEncoding.DecodeString(b64)
 	if err != nil {
-		log.Fatalf("failed to initialize Firestore client: %v", err)
-		return nil, err
+		log.Fatalf("failed to decode service key: %v", err)
+	}
+	creds := option.WithCredentialsJSON(dec)
+
+	client, err := firestore.NewClient(ctx, projectID, creds)
+	if err != nil {
+		log.Fatalf("failed to create Firestore client: %v", err)
 	}
 	return client, nil
 }
