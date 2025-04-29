@@ -9,7 +9,7 @@ import (
 )
 
 type TrashcanUseCase interface {
-	CreateTrashcan(ctx context.Context, latitude float64, longitude float64, image string, trashType []string) error
+	CreateTrashcan(ctx context.Context, latitude float64, longitude float64, image string, trashType []string, nearestBuilding string) error
 }
 
 type trashcanUseCase struct {
@@ -22,18 +22,19 @@ func NewTrashcanUseCase(tr repository.TrashcanRepository) TrashcanUseCase {
 	}
 }
 
-func (tu *trashcanUseCase) CreateTrashcan(ctx context.Context, latitude float64, longitude float64, image string, trashType []string) error {
+func (tu *trashcanUseCase) CreateTrashcan(ctx context.Context, latitude float64, longitude float64, image string, trashType []string, nearestBuilding string) error {
 	ID, err := uuid.NewRandom()
 	if err != nil {
 		return err
 	}
 
 	trashcan := domain.Trashcan{
-		ID:        ID.String(),
-		Latitude:  latitude,
-		Longitude: longitude,
-		Image:     image,
-		TrashType: trashType,
+		ID:              ID.String(),
+		Latitude:        latitude,
+		Longitude:       longitude,
+		Image:           image,
+		NearestBuilding: nearestBuilding,
+		TrashType:       trashType,
 	}
 
 	err = tu.trashcanRepository.CreateTrashcan(ctx, &trashcan)

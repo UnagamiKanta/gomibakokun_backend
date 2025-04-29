@@ -1,8 +1,9 @@
-package interfaces
+package handler
 
 import (
 	"gomibakokun_backend/interfaces/response"
 	"gomibakokun_backend/usecase"
+	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
@@ -24,10 +25,15 @@ func NewTrashcanHandler(tu usecase.TrashcanUseCase) TrashcanHandler {
 func (th trashcanHandler) HandleTrashcanCreate(c echo.Context) error {
 	var req response.CreateTrashcanReq
 	if err := c.Bind(&req); err != nil {
-		return err
+		return c.JSON(http.StatusInternalServerError, echo.Map{"success": false})
 	}
 
 	ctx := c.Request().Context()
 
-	err := usecase.TrashcanUseCase{}.CreateTrashcan(ctx, req.Latitude, req.Longitude, req.Image, req.TrashType)
+	err := th.trashcanUsecase.CreateTrashcan(ctx, req.Latitude, req.Longitude, req.Image, req.TrashType, req.NearestBuilding)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{"success": false})
+	}
+
+	return c.JSON(http.StatusCreated, echo.Map{"success": true})
 }
