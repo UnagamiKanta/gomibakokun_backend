@@ -1,1 +1,1 @@
-web: gomibakokun_backend
+web: go run main.go
