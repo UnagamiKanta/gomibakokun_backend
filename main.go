@@ -32,6 +32,7 @@ func main() {
 
 	e := echo.New()
 	e.POST("/trashcan", trashcanHandler.HandleTrashcanCreate)
+	e.GET("/trashcan", trashcanHandler.HandleTrashcansInRange)
 
 	e.Logger.Fatal(e.Start(":" + port))
 }

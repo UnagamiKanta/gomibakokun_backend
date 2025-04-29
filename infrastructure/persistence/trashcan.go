@@ -32,3 +32,23 @@ func (tp trashcanPersistence) CreateTrashcan(ctx context.Context, trashcan *doma
 
 	return err
 }
+
+func (tp trashcanPersistence) GetAllTrashcan(ctx context.Context) ([]*domain.Trashcan, error) {
+	iter := tp.client.Collection("trashcans").Documents(ctx)
+	var trashcans []*domain.Trashcan
+
+	for {
+		doc, err := iter.Next()
+		if err != nil {
+			break
+		}
+		var trashcan domain.Trashcan
+		if err := doc.DataTo(&trashcan); err != nil {
+			log.Printf("An error has occurred to get all trashcans: %s", err)
+			return nil, err
+		}
+		trashcans = append(trashcans, &trashcan)
+	}
+
+	return trashcans, nil
+}

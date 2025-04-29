@@ -5,11 +5,14 @@ import (
 	"gomibakokun_backend/usecase"
 	"net/http"
 
+	"strconv"
+
 	"github.com/labstack/echo/v4"
 )
 
 type TrashcanHandler interface {
 	HandleTrashcanCreate(c echo.Context) error
+	HandleTrashcansInRange(c echo.Context) error
 }
 
 type trashcanHandler struct {
@@ -36,4 +39,30 @@ func (th trashcanHandler) HandleTrashcanCreate(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, echo.Map{"success": true})
+}
+
+func (th trashcanHandler) HandleTrashcansInRange(c echo.Context) error {
+	latitude := c.QueryParam("latitude")
+	longitude := c.QueryParam("longitude")
+
+	ctx := c.Request().Context()
+
+	range_radius := 5 //TODO:constでまとめる
+
+	latitudeFloat, err := strconv.ParseFloat(latitude, 64)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{"success": false})
+	}
+
+	longitudeFloat, err := strconv.ParseFloat(longitude, 64)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{"success": false})
+	}
+
+	trashcans, err := th.trashcanUsecase.GetTrashcansInRange(ctx, latitudeFloat, longitudeFloat, float64(range_radius))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{"success": false})
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{"success": true, "trashcans": trashcans})
 }
