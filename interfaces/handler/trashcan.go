@@ -47,7 +47,7 @@ func (th trashcanHandler) HandleTrashcansInRange(c echo.Context) error {
 
 	ctx := c.Request().Context()
 
-	range_radius := 5 //TODO:constでまとめる
+	range_radius := 20000 //TODO:リリース時治す
 
 	latitudeFloat, err := strconv.ParseFloat(latitude, 64)
 	if err != nil {
