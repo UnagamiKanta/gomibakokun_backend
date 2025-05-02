@@ -23,6 +23,7 @@ func (tp trashcanPersistence) CreateTrashcan(ctx context.Context, trashcan *doma
 		"latitude":        trashcan.Latitude,
 		"longitude":       trashcan.Longitude,
 		"trashType":       trashcan.TrashType,
+		"image":           trashcan.Image,
 		"nearestBuilding": trashcan.NearestBuilding,
 	})
 
