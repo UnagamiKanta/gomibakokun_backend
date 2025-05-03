@@ -6,15 +6,11 @@
 DB:GCP Firestore
 
 
-
-
-
 ## ディレクトリ構成
 ```
 rootdir
-├── cmd
-│   └── api
-│       └── main.go
+├── main.go
+│       
 ├── domain
 │   └── repository
 |   |   └── user_repository.go
@@ -25,7 +21,7 @@ rootdir
 │   └── handler
 │   |   └── user.go
 |   └── response
-│       └── response.go
+│       └── user_response.go
 ├── infrastructure
 │   └── persistence
 │       └── user.go
@@ -35,7 +31,7 @@ rootdir
 
 ## 設計(レイヤード+DDD)
 
-### domain layer
+### Domain layer
 --- 
 **ドメインモデル**
 - TrashCan
@@ -51,11 +47,29 @@ rootdir
     - bottle_can
     - other
     - everything
-  
-**リポジトリ**
-型が明らかなものは省略(これってDB参照してる時点で不味くね？)
-| 関数 | 引数(型) |返り値(型)|
-| ---- | ---- | ----|
-| Create | clinet, tarashCan |error|
-| Read | DB(*firesotre.Clinet), ID(string) | trashCan, error|
-|Delete|DB, ID(string)|error|
+
+## Repository layer
+
+### Trashcan repository
+domain/repository/trashcan_repository.go
+trashcanに関する機能を定義(中身は実装しない)
+| 関数 | 引数(型) |返り値(型)|機能(簡単に)|
+| ---- | ---- | ---- | ---- |
+| CreateTrashcan | ctx, trashcan | error | ゴミ箱情報をDBに保存|
+| GetAllTrashcan | ctx | []trashcan, error | DBに保存してあるすべてのゴミ箱を保存 |
+
+## Infrastructure layer
+実際のDBとの接続を実装
+### Trashcan persistence
+infrastructure/persistence.go
+| 関数 | 引数(型) |返り値(型)|機能(簡単に)|
+| ---- | ---- | ---- | ---- |
+| CreateTrashcan | ctx, trashcan | error | ゴミ箱情報をDBに保存|
+| GetAllTrashcan | ctx | []trashcan, error | DBに保存してあるすべてのゴミ箱を保存 |
+
+## Usecase layer
+ビジネスロジックを実装
+| 関数 | 引数(型) |返り値(型)|機能(簡単に)|
+| ---- | ---- | ---- | ---- |
+| CreateTrashcan | ctx, latitude(float64), longitude(float64), image(string), trashType([]string), nearestBuilding(string) | error | ゴミ箱のIDを作成してDBに保存|
+| GetAllTrashcan | ctx | []trashcan, error | DBに保存してあるすべてのゴミ箱を保存 |
