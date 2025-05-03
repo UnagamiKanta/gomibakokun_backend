@@ -13,6 +13,7 @@ import (
 type TrashcanHandler interface {
 	HandleTrashcanCreate(c echo.Context) error
 	HandleTrashcansInRange(c echo.Context) error
+	HandleTrashcanDelete(c echo.Context) error
 }
 
 type trashcanHandler struct {
@@ -65,4 +66,17 @@ func (th trashcanHandler) HandleTrashcansInRange(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, echo.Map{"success": true, "trashcans": trashcans})
+}
+
+func (th trashcanHandler) HandleTrashcanDelete(c echo.Context) error {
+	ID := c.QueryParam("id")
+
+	ctx := c.Request().Context()
+
+	err := th.trashcanUsecase.DeleteTrashcan(ctx, ID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{"success": false})
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{"success": true})
 }

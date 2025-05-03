@@ -13,6 +13,7 @@ import (
 type TrashcanUseCase interface {
 	CreateTrashcan(ctx context.Context, latitude float64, longitude float64, image string, trashType []string, nearestBuilding string) error
 	GetTrashcansInRange(ctx context.Context, latitude float64, longitude float64, radius float64) ([]*domain.Trashcan, error)
+	DeleteTrashcan(ctx context.Context, ID string) error
 }
 
 type trashcanUseCase struct {
@@ -59,6 +60,12 @@ func (tu *trashcanUseCase) GetTrashcansInRange(ctx context.Context, latitude flo
 	}
 
 	return trashcansInRange, nil
+}
+
+func (tu *trashcanUseCase) DeleteTrashcan(ctx context.Context, ID string) error {
+	err := tu.trashcanRepository.DeleteTrashcan(ctx, ID)
+
+	return err
 }
 
 func isInRange(lat1, lon1, lat2, lon2, radiusKm float64) bool {

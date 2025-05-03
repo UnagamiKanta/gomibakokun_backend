@@ -53,3 +53,11 @@ func (tp trashcanPersistence) GetAllTrashcan(ctx context.Context) ([]*domain.Tra
 
 	return trashcans, nil
 }
+
+func (tp trashcanPersistence) DeleteTrashcan(ctx context.Context, ID string) error {
+	_, err := tp.client.Collection("trashcans").Doc(ID).Delete(ctx)
+	if err != nil {
+		log.Printf("An error has occurred to delet trashcan: %s", err)
+	}
+	return err
+}
